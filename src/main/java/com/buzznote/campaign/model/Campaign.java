@@ -16,8 +16,8 @@ import java.util.UUID;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity
 @Table(name = "campaigns")
+@Entity
 public class Campaign {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)

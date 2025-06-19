@@ -6,6 +6,8 @@ import com.buzznote.campaign.repo.CampaignRepo;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @AllArgsConstructor
 @Service
 public class CampaignService {
@@ -19,5 +21,9 @@ public class CampaignService {
         newCampaign.setSenderName(campaign.getSenderName());
         newCampaign.setBody(campaign.getBody());
         return campaignRepo.save(newCampaign);
+    }
+
+    public List<Campaign> getCampaignList(String userId) {
+        return campaignRepo.findAll();
     }
 }

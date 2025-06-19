@@ -11,6 +11,7 @@ public class RedisService {
     private RedisTemplate<String, Object> redisTemplate;
 
     public boolean isValidAccessToken(String userId, String token) {
+        System.out.println(getAccessToken(userId) + " == " + token);
         return getAccessToken(userId).equals(token);
     }
 

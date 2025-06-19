@@ -7,21 +7,27 @@ import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.security.Principal;
+import java.util.List;
 
 @AllArgsConstructor
-@RequestMapping("/campaign")
+@RequestMapping("/campaigns")
 @RestController
 public class CampaignController {
 
     private final CampaignService campaignService;
 
-    @PostMapping("/create")
+    @PostMapping("")
     public ResponseEntity<Campaign> createCampaign(@Valid @RequestBody CampaignCreateRequest campaign) {
         Campaign saved = campaignService.createCampaign(campaign);
         return ResponseEntity.status(HttpStatus.CREATED).body(saved);
+    }
+
+    @GetMapping("")
+    public ResponseEntity<List<Campaign>> campaignList(Principal user) {
+        List<Campaign> campaigns = campaignService.getCampaignList(user.getName());
+        return ResponseEntity.ok().body(campaigns);
     }
 }

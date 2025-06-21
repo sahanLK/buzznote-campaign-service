@@ -9,8 +9,10 @@ import com.buzznote.campaign.repo.ContactRepo;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.*;
+import java.util.List;
+import java.util.UUID;
 
 @AllArgsConstructor
 @Service
@@ -28,28 +30,27 @@ public class ContactService {
     public List<ContactList> getContactList() {
         return contactListRepo.findAll();
     }
-    
+
     public ContactList getContactListDetails(UUID contactListId) {
         return contactListRepo.findById(contactListId).orElseThrow();
     }
 
-//    @Transactional
+    @Transactional
     public Contact createContact(@Valid ContactCreateRequest contactCreateRequest) {
-        System.out.println("Running create Contact");
         Contact contact = new Contact();
         contact.setAddress(contactCreateRequest.getAddress());
 
-        for (UUID contactListId: contactCreateRequest.getContactLists()) {
+        for (UUID contactListId : contactCreateRequest.getContactLists()) {
             ContactList contactList = contactListRepo.findById(contactListId)
                     .orElseThrow(() -> new RuntimeException("List not found"));
+            contact.getContactLists().add(contactList);
             contactList.getContacts().add(contact);
         }
         return contactRepo.save(contact);
     }
 
-    public Optional<Contact> getContactDetails(UUID contactId) {
-        System.out.println("Running getContactDetails");
-        return contactRepo.findById(contactId);
+    public Contact getContactDetails(UUID contactId) {
+        return contactRepo.findById(contactId).orElseThrow(() -> new RuntimeException("Contact not found"));
     }
 
 }

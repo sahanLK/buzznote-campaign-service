@@ -1,15 +1,18 @@
 package com.buzznote.campaign.model;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
 
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "contacts")
@@ -20,7 +23,6 @@ public class Contact {
     private UUID id;
     private String address;
 
-    @JsonBackReference
     @ManyToMany(mappedBy = "contacts")
     private Set<ContactList> contactLists = new HashSet<>();
 }

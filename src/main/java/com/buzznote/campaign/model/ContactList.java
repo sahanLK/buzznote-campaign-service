@@ -1,6 +1,5 @@
 package com.buzznote.campaign.model;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -11,7 +10,8 @@ import java.util.Set;
 import java.util.UUID;
 
 
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "contact_lists")
@@ -25,7 +25,6 @@ public class ContactList {
     @CreationTimestamp
     private LocalDateTime createdAt;
 
-    @JsonManagedReference
     @ManyToMany
     @JoinTable(
             name = "contact_list_contacts",

@@ -21,6 +21,7 @@ import java.util.UUID;
 public class ContactController {
 
     private ContactService contactService;
+    private ContactResponseMapper mapper;
 
     @PostMapping("/list")
     public ResponseEntity<?> createContactList(@Valid @RequestBody ContactListCreateRequest contactListCreateRequest) {
@@ -31,25 +32,25 @@ public class ContactController {
     @GetMapping("/list")
     public ResponseEntity<?> getAllContactLists() {
         List<ContactList> contactListSet = contactService.getContactList();
-        return ResponseEntity.ok().body(contactListSet);
+        return ResponseEntity.ok().body(mapper.allContactLists(contactListSet));
     }
 
     @GetMapping("/list/details")
     public ResponseEntity<?> getContactListDetails(@RequestParam UUID contactListId) {
         ContactList contactList = contactService.getContactListDetails(contactListId);
-        return ResponseEntity.ok().body(ContactResponseMapper.contactListDetailsResponse(contactList));
+        return ResponseEntity.ok().body(mapper.contactListDetailsResponse(contactList));
     }
 
     @PostMapping("")
     public ResponseEntity<?> createContact(@Valid @RequestBody ContactCreateRequest contactCreateRequest) {
         Contact contact = contactService.createContact(contactCreateRequest);
-        return ResponseEntity.status(HttpStatus.CREATED).body(ContactResponseMapper.contactCreateResponse(contact));
+        return ResponseEntity.status(HttpStatus.CREATED).body(mapper.contactCreateResponse(contact));
     }
 
     @GetMapping("")
     public ResponseEntity<?> getContactDetails(@RequestParam UUID contactId) {
         Contact contact = contactService.getContactDetails(contactId);
-        return ResponseEntity.ok().body(ContactResponseMapper.contactDetailsResponse(contact));
+        return ResponseEntity.ok().body(mapper.contactDetailsResponse(contact));
     }
 
 }

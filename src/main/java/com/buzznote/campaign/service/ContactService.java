@@ -2,14 +2,16 @@ package com.buzznote.campaign.service;
 
 import com.buzznote.campaign.dto.ContactCreateRequest;
 import com.buzznote.campaign.dto.ContactListCreateRequest;
+import com.buzznote.campaign.exception.DuplicateResourceException;
+import com.buzznote.campaign.exception.NotFoundException;
 import com.buzznote.campaign.model.Contact;
 import com.buzznote.campaign.model.ContactList;
 import com.buzznote.campaign.repo.ContactListRepo;
 import com.buzznote.campaign.repo.ContactRepo;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.UUID;
@@ -32,25 +34,31 @@ public class ContactService {
     }
 
     public ContactList getContactListDetails(UUID contactListId) {
-        return contactListRepo.findById(contactListId).orElseThrow();
+        return contactListRepo.findById(contactListId).orElseThrow(NotFoundException::new);
     }
 
-    @Transactional
     public Contact createContact(@Valid ContactCreateRequest contactCreateRequest) {
         Contact contact = new Contact();
         contact.setAddress(contactCreateRequest.getAddress());
 
         for (UUID contactListId : contactCreateRequest.getContactLists()) {
             ContactList contactList = contactListRepo.findById(contactListId)
-                    .orElseThrow(() -> new RuntimeException("List not found"));
+                    .orElseThrow(() -> new NotFoundException("contact list not found: " + contactListId));
             contact.getContactLists().add(contactList);
             contactList.getContacts().add(contact);
         }
-        return contactRepo.save(contact);
+
+        try {
+            Contact response = contactRepo.save(contact);
+            return contactRepo.save(response);
+        } catch (DataIntegrityViolationException e) {
+            throw new DuplicateResourceException("Contact " + contact.getAddress() + " already exists");
+        }
+
     }
 
     public Contact getContactDetails(UUID contactId) {
-        return contactRepo.findById(contactId).orElseThrow(() -> new RuntimeException("Contact not found"));
+        return contactRepo.findById(contactId).orElseThrow(() -> new NotFoundException("Contact not found"));
     }
 
 }

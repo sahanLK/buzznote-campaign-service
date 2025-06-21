@@ -1,21 +1,22 @@
 package com.buzznote.campaign.mappers;
 
-import com.buzznote.campaign.dto.ContactCreateResponse;
-import com.buzznote.campaign.dto.ContactDetailsResponse;
-import com.buzznote.campaign.dto.ContactListCreateResponse;
-import com.buzznote.campaign.dto.ContactListDetailsResponse;
+import com.buzznote.campaign.dto.*;
 import com.buzznote.campaign.model.Contact;
 import com.buzznote.campaign.model.ContactList;
+import org.springframework.context.annotation.Bean;
+import org.springframework.stereotype.Component;
 
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+@Component
 public class ContactResponseMapper {
 
-    public static ContactCreateResponse contactCreateResponse(Contact contact) {
+    public ContactCreateResponse contactCreateResponse(Contact contact) {
         Set<ContactListCreateResponse> contactLists = contact.getContactLists()
                 .stream()
-                .map(cl -> new ContactListCreateResponse(cl.getName()))
+                .map(cl -> new ContactListCreateResponse(cl.getId(), cl.getName()))
                 .collect(Collectors.toSet());
         ContactCreateResponse response = new ContactCreateResponse();
         response.setId(contact.getId());
@@ -24,10 +25,10 @@ public class ContactResponseMapper {
         return response;
     }
 
-    public static ContactDetailsResponse contactDetailsResponse(Contact contact) {
+    public ContactDetailsResponse contactDetailsResponse(Contact contact) {
         Set<ContactListCreateResponse> contactLists = contact.getContactLists()
                 .stream()
-                .map(cl -> new ContactListCreateResponse(cl.getName()))
+                .map(cl -> new ContactListCreateResponse(cl.getId(), cl.getName()))
                 .collect(Collectors.toSet());
         ContactDetailsResponse response = new ContactDetailsResponse();
         response.setId(contact.getId());
@@ -36,7 +37,7 @@ public class ContactResponseMapper {
         return response;
     }
 
-    public static ContactListDetailsResponse contactListDetailsResponse(ContactList contactList) {
+    public ContactListDetailsResponse contactListDetailsResponse(ContactList contactList) {
         Set<ContactCreateResponse> contactLists = contactList.getContacts()
                 .stream()
                 .map(c -> new ContactCreateResponse(c.getId(), c.getAddress()))
@@ -46,6 +47,17 @@ public class ContactResponseMapper {
         response.setId(contactList.getId());
         response.setName(contactList.getName());
         response.setContacts(contactLists);
+        return response;
+    }
+
+    public GetAllContactListsResponse allContactLists(List<ContactList> contactListSet) {
+        Set<ContactListCreateResponse> contactLists = contactListSet
+                .stream()
+                .map(c -> new ContactListCreateResponse(c.getId(), c.getName()))
+                .collect(Collectors.toSet());
+
+        GetAllContactListsResponse response = new GetAllContactListsResponse();
+        response.setContactLists(contactLists);
         return response;
     }
 }

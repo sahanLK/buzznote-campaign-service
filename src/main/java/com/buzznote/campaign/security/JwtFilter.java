@@ -1,5 +1,6 @@
 package com.buzznote.campaign.security;
 
+import com.buzznote.campaign.exception.InvalidTokenException;
 import com.buzznote.campaign.service.JwtService;
 import com.buzznote.campaign.service.RedisService;
 import jakarta.servlet.FilterChain;
@@ -13,7 +14,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -38,32 +38,38 @@ public class JwtFilter extends OncePerRequestFilter {
         String authHeader = request.getHeader("Authorization");
         String token;
 
-        if (authHeader != null && authHeader.startsWith("Bearer ")) {
-            token = authHeader.substring(7);
-        } else if (request.getCookies() != null) {
-            token = Arrays.stream(request.getCookies())
-                    .filter(c -> "accessToken".equals(c.getName()))
-                    .map(Cookie::getValue)
-                    .findFirst()
-                    .orElse(null);
-        } else {
-            return;
-        }
+        try {
 
-        String username = jwtService.extractUsername(token);
-        if (redisService.isValidAccessToken(username, token)) {
-            if (jwtService.validateAccessToken(token)) {
-                List<GrantedAuthority> authorities = List.of(new SimpleGrantedAuthority("ROLE_USER"));
-                UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(username, null, authorities);
-                SecurityContextHolder.getContext().setAuthentication(authToken);
+            if (authHeader != null && authHeader.startsWith("Bearer ")) {
+                token = authHeader.substring(7);
+            } else if (request.getCookies() != null) {
+                token = Arrays.stream(request.getCookies())
+                        .filter(c -> "accessToken".equals(c.getName()))
+                        .map(Cookie::getValue)
+                        .findFirst()
+                        .orElse(null);
+            } else {
+                throw new InvalidTokenException();
             }
-        } else {
+
+            String username = jwtService.extractUsername(token);
+            if (redisService.isValidAccessToken(username, token)) {
+                if (jwtService.validateAccessToken(token)) {
+                    List<GrantedAuthority> authorities = List.of(new SimpleGrantedAuthority("ROLE_USER"));
+                    UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(username, null, authorities);
+                    SecurityContextHolder.getContext().setAuthentication(authToken);
+                }
+            } else {
+                throw new InvalidTokenException();
+            }
+
+            chain.doFilter(request, response);
+
+        } catch (InvalidTokenException exception) {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            response.getWriter().write("Invalid Credentials");
-            return;
+            response.getWriter().write("UNAUTHORIZED");
         }
 
-        chain.doFilter(request, response);
     }
 
 }

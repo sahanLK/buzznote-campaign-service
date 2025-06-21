@@ -1,5 +1,6 @@
 package com.buzznote.campaign.service;
 
+import com.buzznote.campaign.exception.InvalidTokenException;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
@@ -25,7 +26,11 @@ public class JwtService {
     }
 
     public String extractUsername(String token) {
-        return Jwts.parserBuilder().setSigningKey(getKey()).build().parseClaimsJws(token).getBody().getSubject();
+        try {
+            return Jwts.parserBuilder().setSigningKey(getKey()).build().parseClaimsJws(token).getBody().getSubject();
+        } catch (Exception e) {
+            throw new InvalidTokenException("UNAUTHORIZED");
+        }
     }
 
     private boolean isTokenExpired(String token) {

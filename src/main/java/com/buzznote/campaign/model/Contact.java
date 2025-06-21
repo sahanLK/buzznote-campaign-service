@@ -15,12 +15,13 @@ import java.util.UUID;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "contacts")
+@Table(name = "contacts", uniqueConstraints = @UniqueConstraint(name = "unique_address", columnNames = "address"))
 @Entity
 public class Contact {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
+
     private String address;
 
     @ManyToMany(mappedBy = "contacts")

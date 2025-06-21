@@ -31,7 +31,7 @@ public class ContactController {
 
     @GetMapping("/list")
     public ResponseEntity<?> getAllContactLists() {
-        List<ContactList> contactListSet = contactService.getContactList();
+        List<ContactList> contactListSet = contactService.getContactLists();
         return ResponseEntity.ok().body(mapper.allContactLists(contactListSet));
     }
 

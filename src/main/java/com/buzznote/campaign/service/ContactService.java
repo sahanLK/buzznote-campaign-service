@@ -14,6 +14,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @AllArgsConstructor
@@ -29,8 +30,13 @@ public class ContactService {
         return contactListRepo.save(contactList);
     }
 
-    public List<ContactList> getContactList() {
+    public List<ContactList> getContactLists() {
         return contactListRepo.findAll();
+    }
+
+    public ContactList findContactList(UUID contactListId) {
+        return contactListRepo.findById(contactListId)
+                .orElseThrow(() -> new NotFoundException("no contact list with id: " + contactListId));
     }
 
     public ContactList getContactListDetails(UUID contactListId) {

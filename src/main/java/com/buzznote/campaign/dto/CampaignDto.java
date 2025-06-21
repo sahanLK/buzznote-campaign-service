@@ -2,19 +2,15 @@ package com.buzznote.campaign.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
-import java.util.Set;
 import java.util.UUID;
 
-@Data
-@NoArgsConstructor
 @AllArgsConstructor
-public class CampaignCreateResponse {
+@Data
+public class CampaignDto {
     private UUID id;
     private String title;
     private String senderName;
     private String senderEmail;
     private String body;
-    private Set<ContactListCreateResponse> contactLists;
 }

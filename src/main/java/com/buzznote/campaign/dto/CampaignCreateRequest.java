@@ -3,6 +3,9 @@ package com.buzznote.campaign.dto;
 import jakarta.validation.constraints.*;
 import lombok.Data;
 
+import java.util.Set;
+import java.util.UUID;
+
 @Data
 public class CampaignCreateRequest {
 
@@ -16,4 +19,5 @@ public class CampaignCreateRequest {
 
     @NotBlank(message = "Body is required")
     private String body;
+    private Set<UUID> contactListIds;
 }

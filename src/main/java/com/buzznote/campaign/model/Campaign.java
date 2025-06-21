@@ -16,12 +16,16 @@ import java.util.UUID;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "campaigns")
+@Table(
+        name = "campaigns",
+        uniqueConstraints = @UniqueConstraint(name = "unique_title", columnNames = {"userId", "title"}))
 @Entity
 public class Campaign {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
+
+    @Column(nullable = false)
     private String userId;
     private String title;
     private String senderName;

@@ -1,8 +1,11 @@
 package com.buzznote.campaign.mappers;
 
-import com.buzznote.campaign.dto.*;
+import com.buzznote.campaign.dto.CampaignCreateResponse;
+import com.buzznote.campaign.dto.CampaignListResponse;
+import com.buzznote.campaign.dto.ContactListCreateResponse;
+import com.buzznote.campaign.dto.GetAllCampaignsResponse;
 import com.buzznote.campaign.model.Campaign;
-import com.buzznote.campaign.model.ContactList;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -28,10 +31,10 @@ public class CampaignResponseMapper {
         return response;
     }
 
-    public GetAllCampaignsResponse campaignListResponse(List<Campaign> campaigns) {
-        Set<CampaignDto> campaignList = campaigns
+    public GetAllCampaignsResponse campaignListResponse(Page<Campaign> campaigns) {
+        Set<CampaignListResponse> campaignList = campaigns
                 .stream()
-                .map(c -> new CampaignDto(c.getId(), c.getTitle(), c.getSenderName(), c.getSenderEmail(), c.getBody()))
+                .map(c -> new CampaignListResponse(c.getId(), c.getTitle(), c.getSenderName(), c.getSenderEmail(), c.getBody()))
                 .collect(Collectors.toSet());
 
         GetAllCampaignsResponse response = new GetAllCampaignsResponse();

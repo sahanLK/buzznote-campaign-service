@@ -11,10 +11,10 @@ import com.buzznote.campaign.repo.ContactRepo;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 @AllArgsConstructor
@@ -27,11 +27,16 @@ public class ContactService {
     public ContactList createContactList(@Valid ContactListCreateRequest contactListCreateRequest) {
         ContactList contactList = new ContactList();
         contactList.setName(contactListCreateRequest.getName());
-        return contactListRepo.save(contactList);
+
+        try {
+            return contactListRepo.save(contactList);
+        } catch (DataIntegrityViolationException exception) {
+            throw new DuplicateResourceException("contact list already exists: " + contactListCreateRequest.getName());
+        }
     }
 
-    public List<ContactList> getContactLists() {
-        return contactListRepo.findAll();
+    public Page<ContactList> getContactLists(Pageable pageable) {
+        return contactListRepo.findAll(pageable);
     }
 
     public ContactList findContactList(UUID contactListId) {

@@ -1,17 +1,18 @@
 package com.buzznote.campaign.service;
 
+import com.buzznote.campaign.dto.CampaignCreateRequest;
 import com.buzznote.campaign.exception.DuplicateResourceException;
 import com.buzznote.campaign.model.Campaign;
-import com.buzznote.campaign.dto.CampaignCreateRequest;
 import com.buzznote.campaign.model.ContactList;
 import com.buzznote.campaign.repo.CampaignRepo;
 import lombok.AllArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.UUID;
 
 @AllArgsConstructor
@@ -26,7 +27,7 @@ public class CampaignService {
         String userId = auth.getName();
         Campaign newCampaign = new Campaign();
 
-        for (UUID contactListId: campaign.getContactListIds()) {
+        for (UUID contactListId : campaign.getContactListIds()) {
             ContactList contactList = contactService.findContactList(contactListId);
             newCampaign.getContactLists().add(contactList);
             contactList.getCampaigns().add(newCampaign);
@@ -45,7 +46,7 @@ public class CampaignService {
         }
     }
 
-    public List<Campaign> getCampaignList(String userId) {
-        return campaignRepo.findAll();
+    public Page<Campaign> getCampaignList(String userId, Pageable pageable) {
+        return campaignRepo.findAll(pageable);
     }
 }

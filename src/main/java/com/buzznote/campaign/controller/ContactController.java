@@ -8,11 +8,12 @@ import com.buzznote.campaign.model.ContactList;
 import com.buzznote.campaign.service.ContactService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.UUID;
 
 @AllArgsConstructor
@@ -30,8 +31,8 @@ public class ContactController {
     }
 
     @GetMapping("/list")
-    public ResponseEntity<?> getAllContactLists() {
-        List<ContactList> contactListSet = contactService.getContactLists();
+    public ResponseEntity<?> getAllContactLists(Pageable pageable) {
+        Page<ContactList> contactListSet = contactService.getContactLists(pageable);
         return ResponseEntity.ok().body(mapper.allContactLists(contactListSet));
     }
 

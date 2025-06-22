@@ -7,7 +7,7 @@ import java.util.UUID;
 
 @AllArgsConstructor
 @Data
-public class CampaignDto {
+public class CampaignListResponse {
     private UUID id;
     private String title;
     private String senderName;

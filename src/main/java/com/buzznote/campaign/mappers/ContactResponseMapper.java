@@ -3,10 +3,9 @@ package com.buzznote.campaign.mappers;
 import com.buzznote.campaign.dto.*;
 import com.buzznote.campaign.model.Contact;
 import com.buzznote.campaign.model.ContactList;
-import org.springframework.context.annotation.Bean;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -50,7 +49,7 @@ public class ContactResponseMapper {
         return response;
     }
 
-    public GetAllContactListsResponse allContactLists(List<ContactList> contactListSet) {
+    public GetAllContactListsResponse allContactLists(Page<ContactList> contactListSet) {
         Set<ContactListCreateResponse> contactLists = contactListSet
                 .stream()
                 .map(c -> new ContactListCreateResponse(c.getId(), c.getName()))

@@ -6,5 +6,5 @@ import java.util.Set;
 
 @Data
 public class GetAllCampaignsResponse {
-    private Set<CampaignDto> campaigns;
+    private Set<CampaignListResponse> campaigns;
 }

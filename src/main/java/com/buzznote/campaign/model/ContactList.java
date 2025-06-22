@@ -14,7 +14,9 @@ import java.util.UUID;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "contact_lists")
+@Table(
+        name = "contact_lists",
+        uniqueConstraints = @UniqueConstraint(name= "unique contact_list name", columnNames = "name"))
 @Entity
 public class ContactList {
     @Id

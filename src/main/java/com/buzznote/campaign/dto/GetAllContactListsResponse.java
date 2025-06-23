@@ -6,5 +6,6 @@ import java.util.Set;
 
 @Data
 public class GetAllContactListsResponse {
-    private Set<ContactListCreateResponse> contactLists;
+    private Set<ContactListCreateResponse> data;
+    private Boolean more;
 }

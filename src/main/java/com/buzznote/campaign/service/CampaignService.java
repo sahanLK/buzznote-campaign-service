@@ -1,7 +1,9 @@
 package com.buzznote.campaign.service;
 
 import com.buzznote.campaign.dto.CampaignCreateRequest;
+import com.buzznote.campaign.dto.CampaignUpdateRequest;
 import com.buzznote.campaign.exception.DuplicateResourceException;
+import com.buzznote.campaign.exception.NotFoundException;
 import com.buzznote.campaign.model.Campaign;
 import com.buzznote.campaign.model.ContactList;
 import com.buzznote.campaign.repo.CampaignRepo;
@@ -48,5 +50,15 @@ public class CampaignService {
 
     public Page<Campaign> getCampaignList(String userId, Pageable pageable) {
         return campaignRepo.findAll(pageable);
+    }
+
+    public Campaign updateCampaignFull(CampaignUpdateRequest campaign) {
+        Campaign c = campaignRepo.findById(campaign.getId())
+                .orElseThrow(NotFoundException::new);
+        c.setTitle(campaign.getTitle());
+        c.setBody(c.getBody());
+        c.setSenderName(c.getSenderName());
+        c.setSenderEmail(campaign.getSenderEmail());
+        return campaignRepo.save(c);
     }
 }

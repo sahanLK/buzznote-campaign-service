@@ -56,7 +56,8 @@ public class ContactResponseMapper {
                 .collect(Collectors.toSet());
 
         GetAllContactListsResponse response = new GetAllContactListsResponse();
-        response.setContactLists(contactLists);
+        response.setData(contactLists);
+        response.setMore(contactListSet.hasNext());
         return response;
     }
 }

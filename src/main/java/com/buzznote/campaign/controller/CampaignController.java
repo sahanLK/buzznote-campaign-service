@@ -1,11 +1,13 @@
 package com.buzznote.campaign.controller;
 
 import com.buzznote.campaign.dto.CampaignCreateRequest;
+import com.buzznote.campaign.dto.CampaignUpdateRequest;
 import com.buzznote.campaign.mappers.CampaignResponseMapper;
 import com.buzznote.campaign.model.Campaign;
 import com.buzznote.campaign.service.CampaignService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -35,5 +37,11 @@ public class CampaignController {
     public ResponseEntity<?> campaignList(Principal user, Pageable pageable) {
         Page<Campaign> campaigns = campaignService.getCampaignList(user.getName(), pageable);
         return ResponseEntity.ok().body(mapper.campaignListResponse(campaigns));
+    }
+
+    @PutMapping("")
+    public ResponseEntity<?> updateCampaign(CampaignUpdateRequest campaign) {
+        Campaign saved = campaignService.updateCampaignFull(campaign);
+        return ResponseEntity.status(HttpStatus.CREATED).body(mapper.campaignCreateResponse(saved));
     }
 }

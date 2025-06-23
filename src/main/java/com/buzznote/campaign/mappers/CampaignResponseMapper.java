@@ -8,7 +8,6 @@ import com.buzznote.campaign.model.Campaign;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -38,7 +37,8 @@ public class CampaignResponseMapper {
                 .collect(Collectors.toSet());
 
         GetAllCampaignsResponse response = new GetAllCampaignsResponse();
-        response.setCampaigns(campaignList);
+        response.setData(campaignList);
+        response.setMore(campaigns.hasNext());
         return response;
     }
 }
